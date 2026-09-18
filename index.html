@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es-CO" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#4338CA" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#14122B" media="(prefers-color-scheme: dark)" />
+
+    <title>ERP Módulos Básicos · NiAnd Labs</title>
+    <meta name="description" content="Terceros, inventario, facturación, tesorería y contabilidad de partida doble. Laboratorio de NiAnd Labs S.A.S." />
+    <meta name="author" content="AndreZzRg" />
+    <link rel="canonical" href="https://andrezzrg.github.io/niand-erp-basico/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="NiAnd Labs" />
+    <meta property="og:title" content="ERP Módulos Básicos · NiAnd Labs" />
+    <meta property="og:description" content="Terceros, inventario, facturación, tesorería y contabilidad de partida doble." />
+    <meta property="og:url" content="https://andrezzrg.github.io/niand-erp-basico/" />
+    <meta property="og:locale" content="es_CO" />
+    <meta name="twitter:card" content="summary" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <script>
+      // Evita el parpadeo de tema: se aplica antes de pintar.
+      (function () {
+        try {
+          var g = localStorage.getItem('niand:tema');
+          var d = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          document.documentElement.dataset.theme = g || (d ? 'dark' : 'light');
+        } catch (e) {
+          document.documentElement.dataset.theme = 'light';
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>
+      <div style="font-family: system-ui; padding: 2rem; max-width: 40rem; margin: 0 auto">
+        <h1>ERP Módulos Básicos</h1>
+        <p>
+          Esta aplicación se ejecuta por completo en su navegador y requiere JavaScript
+          habilitado. Ninguno de los datos que usted capture sale de su equipo.
+        </p>
+      </div>
+    </noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

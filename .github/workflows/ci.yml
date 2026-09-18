@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verificar:
+    name: Formato · Lint · Tipos · Pruebas · Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [20, 22, 24]
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v5
+
+      - name: Instalar Node ${{ matrix.node }}
+        uses: actions/setup-node@v5
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci --no-audit --fund=false
+
+      - name: Verificar formato
+        run: npm run format:check
+
+      - name: Análisis estático
+        run: npm run lint
+
+      - name: Verificación de tipos
+        run: npm run typecheck
+
+      - name: Pruebas con cobertura
+        run: npm run test:coverage
+
+      - name: Construcción de producción
+        run: npx vite build
+
+      - name: Publicar cobertura
+        if: matrix.node == 22
+        uses: actions/upload-artifact@v4
+        with:
+          name: cobertura
+          path: coverage/
+          retention-days: 7

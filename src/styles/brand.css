@@ -1,0 +1,202 @@
+/* ══════════════════════════════════════════════════════════════════════
+   NiAnd Labs — Sistema de diseño
+   Fuente única de paleta y tipografía: NL-06 Manual de Logotipo,
+   recogido en NL-05 §3 «Sistema visual».
+
+   Reglas que no se negocian (NL-05 §3.3):
+   · Modo claro predeterminado, modo oscuro disponible.
+   · Contraste mínimo AA en todo texto.
+   · Sin sombras dramáticas, sin efectos tridimensionales, sin
+     glassmorphism (derogado en la v2.0 del documento de marca).
+   ══════════════════════════════════════════════════════════════════════ */
+
+@import 'tailwindcss';
+
+/* El modo oscuro se conduce por atributo, no por media query, para que el
+   selector de tema del encabezado mande sobre la preferencia del sistema. */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+@theme {
+  /* ── Tipografía (NL-05 §3.2) ── */
+  --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* ── Paleta de marca (NL-05 §3.1) ── */
+  --color-tinta: #14122b;
+  --color-indigo: #4338ca;
+  --color-senal: #0e9f8e;
+  --color-bruma: #eceafb;
+  --color-nieve: #f7f7fb;
+  --color-grafito: #5b5b6b;
+  --color-destello: #22d3ee;
+  --color-alerta: #e11d48;
+
+  /* Escalas derivadas, calculadas para conservar contraste AA */
+  --color-indigo-suave: #6d63dd;
+  --color-indigo-hondo: #322aa0;
+  --color-senal-suave: #14c0ac;
+  --color-senal-hondo: #0a7669;
+  --color-alerta-suave: #f2678c;
+  --color-ambar: #b45309;
+  --color-ambar-suave: #f59e0b;
+
+  --radius-ni: 0.75rem;
+  --ease-ni: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Tokens semánticos: se redefinen por tema y se exponen a Tailwind con
+   «@theme inline», de modo que las utilidades emitan var(--…) y el cambio
+   de tema sea instantáneo, sin recargar hojas de estilo. */
+:root {
+  --lienzo: #f7f7fb;
+  --superficie: #ffffff;
+  --superficie-2: #eceafb;
+  --superficie-3: #f2f1fa;
+  --texto: #14122b;
+  --texto-2: #5b5b6b;
+  --texto-3: #7a7a8c;
+  --borde: rgb(20 18 43 / 0.12);
+  --borde-fuerte: rgb(20 18 43 / 0.22);
+  --marca: #4338ca;
+  --marca-contraste: #ffffff;
+  --anillo: rgb(67 56 202 / 0.45);
+  --sombra-ni: 0 1px 2px rgb(20 18 43 / 0.05), 0 8px 24px -12px rgb(20 18 43 / 0.14);
+}
+
+[data-theme='dark'] {
+  --lienzo: #14122b;
+  --superficie: #1c1938;
+  --superficie-2: #252148;
+  --superficie-3: #2d2856;
+  --texto: #f4f3fc;
+  --texto-2: #b9b6d4;
+  --texto-3: #918da8;
+  --borde: rgb(255 255 255 / 0.12);
+  --borde-fuerte: rgb(255 255 255 / 0.24);
+  --marca: #8b82ea;
+  --marca-contraste: #14122b;
+  --anillo: rgb(139 130 234 / 0.5);
+  --sombra-ni: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px -12px rgb(0 0 0 / 0.6);
+}
+
+@theme inline {
+  --color-lienzo: var(--lienzo);
+  --color-superficie: var(--superficie);
+  --color-superficie-2: var(--superficie-2);
+  --color-superficie-3: var(--superficie-3);
+  --color-texto: var(--texto);
+  --color-texto-2: var(--texto-2);
+  --color-texto-3: var(--texto-3);
+  --color-borde: var(--borde);
+  --color-borde-fuerte: var(--borde-fuerte);
+  --color-marca: var(--marca);
+  --color-marca-contraste: var(--marca-contraste);
+  --shadow-ni: var(--sombra-ni);
+}
+
+@layer base {
+  * {
+    border-color: var(--borde);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--lienzo);
+    color: var(--texto);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    transition:
+      background-color 0.25s var(--ease-ni),
+      color 0.25s var(--ease-ni);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Foco visible y consistente: requisito de accesibilidad AA. */
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 2px solid var(--marca);
+    outline-offset: 2px;
+    border-radius: 0.375rem;
+  }
+
+  ::selection {
+    background-color: var(--marca);
+    color: var(--marca-contraste);
+  }
+
+  /* Números tabulares en todo lo que sea cifra: las columnas se alinean. */
+  .cifra,
+  table td,
+  table th {
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* Salto al contenido: visible solo con teclado. */
+  .salto-contenido {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 999;
+  }
+  .salto-contenido:focus {
+    left: 0.75rem;
+    top: 0.75rem;
+    padding: 0.5rem 1rem;
+    background-color: var(--marca);
+    color: var(--marca-contraste);
+    border-radius: 0.5rem;
+  }
+
+  /* Cintillo monoespaciado de etiquetas técnicas y legales. */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--texto-3);
+  }
+
+  /* Impresión: el reporte sale legible sin cromo de aplicación. */
+  @media print {
+    .no-imprimir {
+      display: none !important;
+    }
+    body {
+      background: #fff !important;
+      color: #000 !important;
+    }
+  }
+}
