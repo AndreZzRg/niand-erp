@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { fileURLToPath, URL } from 'node:url';
 
 // Base relativa: el mismo artefacto funciona en GitHub Pages
-// (https://andrezzrg.github.io/niand-erp-basico/), en un subdirectorio
+// (https://andrezzrg.github.io/niand-erp/), en un subdirectorio
 // cualquiera y abierto desde el sistema de archivos.
 export default defineConfig({
   base: './',

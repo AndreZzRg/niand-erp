@@ -7,7 +7,7 @@
  */
 import type { ZodType } from 'zod';
 
-const PREFIJO = 'niand-erp-basico:';
+const PREFIJO = 'niand-erp:';
 
 export type Sobre<T> = { version: number; datos: T };
 

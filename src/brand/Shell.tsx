@@ -61,7 +61,7 @@ export function Shell({
       <header className="no-imprimir sticky top-0 z-30 border-b border-borde bg-superficie/92 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 sm:px-6">
           <a
-            href="https://github.com/AndreZzRg/niand-erp-basico"
+            href="https://github.com/AndreZzRg/niand-erp"
             className="shrink-0"
             aria-label="Repositorio de ERP Módulos Básicos"
           >
@@ -141,10 +141,10 @@ export function Shell({
             </p>
             <p className="font-mono">
               <a
-                href="https://github.com/AndreZzRg/niand-erp-basico"
+                href="https://github.com/AndreZzRg/niand-erp"
                 className="hover:text-marca hover:underline"
               >
-                niand-erp-basico
+                niand-erp
               </a>{' '}
               · v1.0.0 · Los datos no salen de su navegador
             </p>

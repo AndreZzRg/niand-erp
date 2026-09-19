@@ -1,5 +1,5 @@
 {
-  "name": "niand-erp-basico",
+  "name": "niand-erp",
   "version": "1.0.0",
   "private": false,
   "description": "ERP Módulos Básicos — Terceros, inventario, facturación, tesorería y contabilidad de partida doble. Laboratorio NiAnd Labs.",
@@ -15,13 +15,13 @@
   ],
   "author": "AndreZzRg <andresrg1999@hotmail.com>",
   "license": "MIT",
-  "homepage": "https://andrezzrg.github.io/niand-erp-basico/",
+  "homepage": "https://andrezzrg.github.io/niand-erp/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AndreZzRg/niand-erp-basico.git"
+    "url": "git+https://github.com/AndreZzRg/niand-erp.git"
   },
   "bugs": {
-    "url": "https://github.com/AndreZzRg/niand-erp-basico/issues"
+    "url": "https://github.com/AndreZzRg/niand-erp/issues"
   },
   "type": "module",
   "engines": {

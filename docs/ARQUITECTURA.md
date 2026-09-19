@@ -78,7 +78,7 @@ empieza a calcular, ese cálculo está en la capa equivocada.
 ## 3. Estado y persistencia
 
 El estado de aplicación se maneja con **Zustand 5** y se persiste de forma explícita en
-`localStorage` bajo claves con prefijo `niand-erp-basico:`.
+`localStorage` bajo claves con prefijo `niand-erp:`.
 
 ```ts
 // Toda escritura pasa por un esquema Zod antes de tocar el almacenamiento.

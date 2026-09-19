@@ -14,8 +14,8 @@ Un aporte sin sustento normativo verificable no se integra, por correcto que par
 ## Flujo de trabajo
 
 ```bash
-git clone https://github.com/AndreZzRg/niand-erp-basico.git
-cd niand-erp-basico
+git clone https://github.com/AndreZzRg/niand-erp.git
+cd niand-erp
 npm install
 npm run dev
 ```

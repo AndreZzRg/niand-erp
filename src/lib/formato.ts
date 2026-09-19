@@ -63,15 +63,7 @@ const MESES = [
   'diciembre',
 ] as const;
 
-const DIAS = [
-  'domingo',
-  'lunes',
-  'martes',
-  'miércoles',
-  'jueves',
-  'viernes',
-  'sábado',
-] as const;
+const DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'] as const;
 
 /** «17 de septiembre de 2026». */
 export function fechaLarga(iso: string): string {

@@ -8,7 +8,7 @@
 
 ## Cómo reportar una vulnerabilidad
 
-Escriba a **<andresrg1999@hotmail.com>** con el asunto `[SEGURIDAD] niand-erp-basico`.
+Escriba a **<andresrg1999@hotmail.com>** con el asunto `[SEGURIDAD] niand-erp`.
 
 Incluya: descripción, pasos de reproducción, impacto estimado y versión afectada.
 Se acusa recibo en un plazo de **72 horas hábiles** y se informa el plan de

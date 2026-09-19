@@ -78,7 +78,7 @@ presente ante una autoridad debe estar revisado por un profesional habilitado.
 <summary><strong>Encontré un cálculo o un plazo que creo equivocado.</strong></summary>
 
 Abra una incidencia en
-[https://github.com/AndreZzRg/niand-erp-basico/issues](https://github.com/AndreZzRg/niand-erp-basico/issues) indicando la norma y el artículo que
+[https://github.com/AndreZzRg/niand-erp/issues](https://github.com/AndreZzRg/niand-erp/issues) indicando la norma y el artículo que
 sustentan el resultado que usted espera. Las correcciones con sustento normativo tienen
 prioridad sobre cualquier otra cosa en este repositorio.
 
@@ -94,4 +94,4 @@ prioridad sobre cualquier otra cosa en este repositorio.
 
 ## Soporte
 
-AndreZzRg · <andresrg1999@hotmail.com> · [Incidencias](https://github.com/AndreZzRg/niand-erp-basico/issues)
+AndreZzRg · <andresrg1999@hotmail.com> · [Incidencias](https://github.com/AndreZzRg/niand-erp/issues)

@@ -86,7 +86,7 @@ encabezado mande sobre la preferencia del sistema.
 
 **Fecha:** 17 de septiembre de 2026 · **Estado:** aceptada
 
-**Contexto.** GitHub Pages sirve el proyecto bajo `/niand-erp-basico/`. Fijar esa ruta en la
+**Contexto.** GitHub Pages sirve el proyecto bajo `/niand-erp/`. Fijar esa ruta en la
 construcción ata el artefacto a un único destino.
 
 **Decisión.** `base: './'`.

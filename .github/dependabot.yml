@@ -15,7 +15,17 @@ updates:
       react:
         patterns: ['react', 'react-dom', '@types/react', '@types/react-dom']
       herramientas:
-        patterns: ['vite', 'vitest', '@vitejs/*', '@vitest/*', 'typescript', 'eslint*', 'typescript-eslint', 'prettier']
+        patterns:
+          [
+            'vite',
+            'vitest',
+            '@vitejs/*',
+            '@vitest/*',
+            'typescript',
+            'eslint*',
+            'typescript-eslint',
+            'prettier',
+          ]
 
   - package-ecosystem: github-actions
     directory: /

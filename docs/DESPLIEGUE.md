@@ -9,10 +9,10 @@ El repositorio incluye `.github/workflows/pages.yml`. Con Pages activado, cada `
 
 ```bash
 # Opción A — con GitHub CLI
-gh repo create AndreZzRg/niand-erp-basico --public --source=. --remote=origin --push
+gh repo create AndreZzRg/niand-erp --public --source=. --remote=origin --push
 
 # Opción B — repositorio vacío ya creado en github.com
-git remote add origin https://github.com/AndreZzRg/niand-erp-basico.git
+git remote add origin https://github.com/AndreZzRg/niand-erp.git
 git branch -M main
 git push -u origin main
 ```
@@ -24,7 +24,7 @@ Luego, una sola vez:
 El sitio queda en:
 
 ```
-https://andrezzrg.github.io/niand-erp-basico/
+https://andrezzrg.github.io/niand-erp/
 ```
 
 ### Qué hace el flujo de trabajo
