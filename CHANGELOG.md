@@ -9,6 +9,13 @@ versionado sigue [Versionado Semántico](https://semver.org/lang/es/).
 
 ### Corregido
 
+- **Node 20 no podía ejecutar la suite de pruebas.** La matriz de CI incluía
+  Node 20, pero `jsdom 30` depende de `undici` y este de
+  `worker_threads.markAsUncloneable`, disponible solo desde Node 22.10. En
+  Node 20 ningún archivo de pruebas llegaba a arrancar y el paso «Pruebas con
+  cobertura» fallaba. Se retira Node 20 de la matriz y se sube el mínimo
+  declarado en `engines` a `>=22.10.0`, que es la versión que el entorno de
+  pruebas exige de verdad; `.nvmrc` ya fijaba la 22.
 - **La integración continua fallaba en todos sus pasos.** `package-lock.json` no
   estaba versionado, de modo que `npm ci` —primer paso de los flujos de CI, Pages
   y CodeQL— fallaba antes de ejecutar nada.

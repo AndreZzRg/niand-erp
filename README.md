@@ -12,7 +12,7 @@ Laboratorio 11 de la suite de cumplimiento operable de **NiAnd Labs S.A.S.**
 [![Pages](https://github.com/AndreZzRg/niand-erp/actions/workflows/pages.yml/badge.svg)](https://github.com/AndreZzRg/niand-erp/actions/workflows/pages.yml)
 [![CodeQL](https://github.com/AndreZzRg/niand-erp/actions/workflows/codeql.yml/badge.svg)](https://github.com/AndreZzRg/niand-erp/actions/workflows/codeql.yml)
 [![Licencia MIT](https://img.shields.io/badge/licencia-MIT-4338CA)](LICENSE)
-[![Node](https://img.shields.io/badge/node-%E2%89%A520.19-0E9F8E)](https://nodejs.org)
+[![Node](https://img.shields.io/badge/node-%E2%89%A522.10-0E9F8E)](https://nodejs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-19-61DAFB)](https://react.dev)
 [![Vite](https://img.shields.io/badge/Vite-8-646CFF)](https://vite.dev)
@@ -46,7 +46,9 @@ ERP de alcance básico para pyme colombiana: maestro de terceros, catálogo de p
 
 ## Puesta en marcha
 
-Requiere **Node.js 20.19 o superior** (`.nvmrc` fija la 22) y npm 10+.
+Requiere **Node.js 22.10 o superior** (`.nvmrc` fija la 22) y npm 10+.
+El entorno de pruebas usa jsdom 30, que depende de `undici` y este de
+`worker_threads.markAsUncloneable`, disponible solo desde Node 22.10.
 
 ```bash
 git clone https://github.com/AndreZzRg/niand-erp.git
@@ -138,7 +140,7 @@ Cada `git push` a `main` vuelve a construir y publicar.
 | **Testing Library** | Pruebas de interfaz sobre el árbol accesible, no sobre detalles de implementación. |
 | **ESLint 9** | Análisis estático con configuración plana y reglas de `typescript-eslint`. |
 | **Prettier 3** | Formato único verificado en integración continua. |
-| **GitHub Actions** | Integración continua en Node 20, 22 y 24, y despliegue automático. |
+| **GitHub Actions** | Integración continua en Node 22 y 24, y despliegue automático. |
 | **GitHub Pages** | Publicación estática desde `main`, sin servidor que administrar. |
 | **CodeQL** | Análisis de seguridad del código en cada cambio y una vez por semana. |
 | **Dependabot** | Actualización agrupada de dependencias de npm y de las acciones. |
