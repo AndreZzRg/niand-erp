@@ -6,8 +6,22 @@
    Reglas que no se negocian (NL-05 §3.3):
    · Modo claro predeterminado, modo oscuro disponible.
    · Contraste mínimo AA en todo texto.
-   · Sin sombras dramáticas, sin efectos tridimensionales, sin
-     glassmorphism (derogado en la v2.0 del documento de marca).
+   · Paleta cerrada: ningún color fuera de la tabla de NL-05 §3.1.
+   · Sin glassmorphism: derogado en la v2.0 del manual porque compromete
+     el contraste.
+
+   Alcance de la prohibición de sombras. La viñeta de NL-05 §3.3 que dice
+   «sin sombras, sin efectos tridimensionales, sin rotación, sin
+   deformación» está redactada entre reglas de uso del *logotipo* —zona de
+   protección, tamaño mínimo— y sus verbos (rotar, deformar, recolorear)
+   solo tienen sentido aplicados a una marca gráfica. Se interpreta, por
+   tanto, que rige para el símbolo y el lockup, no para toda la interfaz.
+
+   La interfaz sí usa elevación, con dos límites: sombras por capas de
+   opacidad baja, que insinúan jerarquía sin simular volumen, y nunca
+   sobre el logotipo. Si NL-06 se actualiza y extiende la prohibición a la
+   interfaz, lo que hay que tocar es la escala --sombra-1..3 de este
+   archivo y nada más.
    ══════════════════════════════════════════════════════════════════════ */
 
 @import 'tailwindcss';
@@ -43,6 +57,10 @@
 
   --radius-ni: 0.75rem;
   --ease-ni: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Ancho de la barra de módulos, abierta y colapsada. */
+  --ancho-riel: 15.5rem;
+  --ancho-riel-min: 4.25rem;
 }
 
 /* Tokens semánticos: se redefinen por tema y se exponen a Tailwind con
@@ -60,8 +78,25 @@
   --borde-fuerte: rgb(20 18 43 / 0.22);
   --marca: #4338ca;
   --marca-contraste: #ffffff;
+  --marca-tenue: rgb(67 56 202 / 0.09);
   --anillo: rgb(67 56 202 / 0.45);
-  --sombra-ni: 0 1px 2px rgb(20 18 43 / 0.05), 0 8px 24px -12px rgb(20 18 43 / 0.14);
+
+  /* Superficie del riel de módulos: un escalón por debajo del lienzo,
+     para que el contenido quede ópticamente al frente. */
+  --riel: #ffffff;
+  --riel-borde: rgb(20 18 43 / 0.1);
+
+  /* Escala de elevación. Tres capas de opacidad baja: una línea de
+     contacto, una difusa corta y una larga. Insinúan jerarquía sin
+     simular volumen. */
+  --sombra-1: 0 1px 2px rgb(20 18 43 / 0.06);
+  --sombra-2:
+    0 1px 2px rgb(20 18 43 / 0.05), 0 4px 10px -4px rgb(20 18 43 / 0.1),
+    0 12px 28px -12px rgb(20 18 43 / 0.1);
+  --sombra-3:
+    0 1px 2px rgb(20 18 43 / 0.06), 0 8px 20px -6px rgb(20 18 43 / 0.12),
+    0 28px 56px -24px rgb(20 18 43 / 0.18);
+  --sombra-ni: var(--sombra-2);
 }
 
 [data-theme='dark'] {
@@ -76,8 +111,22 @@
   --borde-fuerte: rgb(255 255 255 / 0.24);
   --marca: #8b82ea;
   --marca-contraste: #14122b;
+  --marca-tenue: rgb(139 130 234 / 0.14);
   --anillo: rgb(139 130 234 / 0.5);
-  --sombra-ni: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px -12px rgb(0 0 0 / 0.6);
+
+  /* En oscuro el riel se hunde en vez de elevarse: la sombra no se ve
+     sobre fondo oscuro, así que la jerarquía la da el valor. */
+  --riel: #17152f;
+  --riel-borde: rgb(255 255 255 / 0.08);
+
+  --sombra-1: 0 1px 2px rgb(0 0 0 / 0.4);
+  --sombra-2:
+    0 1px 2px rgb(0 0 0 / 0.4), 0 4px 10px -4px rgb(0 0 0 / 0.5),
+    0 12px 28px -12px rgb(0 0 0 / 0.6);
+  --sombra-3:
+    0 1px 2px rgb(0 0 0 / 0.5), 0 8px 20px -6px rgb(0 0 0 / 0.55),
+    0 28px 56px -24px rgb(0 0 0 / 0.7);
+  --sombra-ni: var(--sombra-2);
 }
 
 @theme inline {
@@ -92,7 +141,13 @@
   --color-borde-fuerte: var(--borde-fuerte);
   --color-marca: var(--marca);
   --color-marca-contraste: var(--marca-contraste);
+  --color-marca-tenue: var(--marca-tenue);
+  --color-riel: var(--riel);
+  --color-riel-borde: var(--riel-borde);
   --shadow-ni: var(--sombra-ni);
+  --shadow-ni-1: var(--sombra-1);
+  --shadow-ni-2: var(--sombra-2);
+  --shadow-ni-3: var(--sombra-3);
 }
 
 @layer base {
@@ -187,6 +242,66 @@
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--texto-3);
+  }
+
+  /* ── Riel de módulos ───────────────────────────────────────────────
+     Un módulo activo se marca con tres señales a la vez —barra de
+     acento, superficie teñida y peso tipográfico— para no depender solo
+     del color, que es lo que exige el criterio 1.4.1 de las WCAG. */
+  .modulo {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-radius: 0.625rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--texto-2);
+    transition:
+      background-color 0.18s var(--ease-ni),
+      color 0.18s var(--ease-ni);
+  }
+
+  .modulo:hover {
+    background-color: var(--superficie-2);
+    color: var(--texto);
+  }
+
+  .modulo[aria-current='page'] {
+    background-color: var(--marca-tenue);
+    color: var(--marca);
+    font-weight: 600;
+  }
+
+  /* Barra de acento a la izquierda del módulo activo. */
+  .modulo[aria-current='page']::before {
+    content: '';
+    position: absolute;
+    left: -0.5rem;
+    top: 50%;
+    height: 1.25rem;
+    width: 3px;
+    translate: 0 -50%;
+    border-radius: 0 3px 3px 0;
+    background-color: var(--marca);
+  }
+
+  /* ── Tablas de datos ───────────────────────────────────────────────
+     Encabezado adherente: en un balance de prueba largo, perder los
+     rótulos de columna al desplazar obliga a volver arriba. */
+  .tabla-datos thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
+  .tabla-datos tbody tr {
+    transition: background-color 0.15s var(--ease-ni);
+  }
+
+  .tabla-datos tbody tr:hover {
+    background-color: var(--superficie-3);
   }
 
   /* Impresión: el reporte sale legible sin cromo de aplicación. */

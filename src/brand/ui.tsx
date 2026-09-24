@@ -258,11 +258,31 @@ export function Dato({
     riesgo: 'text-alerta dark:text-alerta-suave',
     info: 'text-senal-hondo dark:text-destello',
   };
+
+  // Filo de color a la izquierda: distingue la cifra de un vistazo sin
+  // recolorear el fondo, que restaría contraste al número.
+  const filo: Record<Tono, string> = {
+    neutro: 'before:bg-borde-fuerte',
+    marca: 'before:bg-marca',
+    ok: 'before:bg-senal',
+    alerta: 'before:bg-ambar-suave',
+    riesgo: 'before:bg-alerta',
+    info: 'before:bg-destello',
+  };
+
   return (
-    <div className="rounded-xl border border-borde bg-superficie-3 px-4 py-3">
+    <div
+      className={cx(
+        'relative overflow-hidden rounded-xl border border-borde bg-superficie px-4 py-3.5 shadow-ni-1',
+        'before:absolute before:inset-y-0 before:left-0 before:w-[3px] before:content-[""]',
+        filo[tono],
+      )}
+    >
       <p className="eyebrow">{rotulo}</p>
-      <p className={cx('cifra mt-1 font-display text-xl font-semibold', acento[tono])}>{valor}</p>
-      {detalle && <p className="mt-0.5 text-xs text-texto-3">{detalle}</p>}
+      <p className={cx('cifra mt-1.5 font-display text-2xl font-semibold', acento[tono])}>
+        {valor}
+      </p>
+      {detalle && <p className="mt-1 text-xs leading-snug text-texto-3">{detalle}</p>}
     </div>
   );
 }
@@ -271,7 +291,12 @@ export function Dato({
 export function Tabla({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <div className="-mx-5 overflow-x-auto px-5">
-      <table className={cx('w-full min-w-[34rem] border-collapse text-sm', className)}>
+      {/* El mínimo es un suelo, no un ancho: una tabla ancha crece sola con
+          su contenido. Se mantiene bajo para que las de dos columnas quepan
+          en una tarjeta a media anchura sin recortar la cifra. */}
+      <table
+        className={cx('tabla-datos w-full min-w-[22rem] border-collapse text-sm', className)}
+      >
         {children}
       </table>
     </div>
@@ -364,10 +389,13 @@ export function Interruptor({
         activo ? 'bg-marca' : 'bg-borde-fuerte',
       )}
     >
+      {/* `left-0` es imprescindible: sin él la perilla parte de la posición
+          estática —centrada, porque el botón centra su contenido— y el
+          desplazamiento la saca fuera de la pastilla, encima de la etiqueta. */}
       <span
         className={cx(
-          'absolute top-0.5 size-5 rounded-full bg-white shadow transition-transform duration-200',
-          activo ? 'translate-x-5.5' : 'translate-x-0.5',
+          'absolute top-0.5 left-0 size-5 rounded-full bg-white shadow transition-transform duration-200',
+          activo ? 'translate-x-[1.375rem]' : 'translate-x-0.5',
         )}
       />
     </button>
