@@ -294,9 +294,7 @@ export function Tabla({ children, className }: { children: ReactNode; className?
       {/* El mínimo es un suelo, no un ancho: una tabla ancha crece sola con
           su contenido. Se mantiene bajo para que las de dos columnas quepan
           en una tarjeta a media anchura sin recortar la cifra. */}
-      <table
-        className={cx('tabla-datos w-full min-w-[22rem] border-collapse text-sm', className)}
-      >
+      <table className={cx('tabla-datos w-full min-w-[22rem] border-collapse text-sm', className)}>
         {children}
       </table>
     </div>

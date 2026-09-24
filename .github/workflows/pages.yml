@@ -27,13 +27,26 @@ jobs:
           node-version: 22
           cache: npm
 
-      - run: npm ci --no-audit --fund=false
+      - run: npm ci --no-audit --fund=false --prefer-offline
 
+      # `npm run build` corre `tsc --noEmit` antes de empaquetar. Invocar
+      # `vite build` a secas se saltaría la verificación de tipos y podría
+      # publicar una compilación que el CI habría rechazado.
       - name: Construir sitio estático
-        run: npx vite build
+        run: npm run build
 
       - name: Habilitar recarga en rutas profundas
         run: cp dist/index.html dist/404.html
+
+      # Una publicación vacía devuelve 200 y pasa inadvertida: es peor que
+      # un fallo. Se comprueba que el artefacto trae página y assets.
+      - name: Verificar el artefacto
+        run: |
+          test -s dist/index.html || { echo "::error::dist/index.html no existe o está vacío"; exit 1; }
+          test -s dist/404.html   || { echo "::error::dist/404.html no existe o está vacío"; exit 1; }
+          test -d dist/assets     || { echo "::error::dist/assets no existe"; exit 1; }
+          grep -q 'crossorigin' dist/index.html || { echo "::error::index.html no referencia el bundle"; exit 1; }
+          echo "Artefacto verificado: $(du -sh dist | cut -f1) en $(find dist -type f | wc -l | tr -d ' ') archivos"
 
       - uses: actions/configure-pages@v5
 

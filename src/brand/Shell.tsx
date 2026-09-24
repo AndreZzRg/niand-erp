@@ -176,7 +176,9 @@ function Riel({
         </span>
         {!colapsado && (
           <span className="min-w-0">
-            <span className="block truncate font-display text-sm font-semibold">{APP.nombre}</span>
+            <span className="block truncate font-display text-sm font-semibold" title={APP.nombre}>
+              {APP.nombre}
+            </span>
             <span className="eyebrow block truncate">Laboratorio</span>
           </span>
         )}
@@ -198,7 +200,7 @@ function Riel({
                     onNavegar?.();
                   }}
                   aria-current={activo ? 'page' : undefined}
-                  title={colapsado ? m.rotulo : undefined}
+                  title={m.rotulo}
                   className={cx('modulo w-full text-left', colapsado && 'lg:justify-center')}
                 >
                   <Icono size={17} className="shrink-0" />

@@ -9,6 +9,19 @@ versionado sigue [Versionado Semántico](https://semver.org/lang/es/).
 
 ### Corregido
 
+- **Los interruptores se solapaban con su etiqueta.** La perilla no fijaba
+  `left`, así que partía de la posición estática —centrada, porque el botón
+  centra su contenido— y el desplazamiento la sacaba fuera de la pastilla,
+  encima del texto: se leía «eclarante de renta».
+- **Los importes se recortaban** en las tablas a dos columnas: el ancho
+  mínimo de 34 rem superaba el de una tarjeta a media anchura.
+- **El emoji del encabezado se dibujaba como un cuadro vacío** en los
+  sistemas sin esa fuente; se reemplaza por un ícono vectorial.
+- **El despliegue se saltaba la verificación de tipos.** El flujo de Pages
+  ejecutaba `vite build` a secas en vez de `npm run build`, de modo que una
+  compilación con errores de tipos podía publicarse aunque el CI la hubiera
+  rechazado. Se añade además una comprobación del artefacto: una publicación
+  vacía devuelve 200 y pasa inadvertida, que es peor que un fallo.
 - **Node 20 no podía ejecutar la suite de pruebas.** La matriz de CI incluía
   Node 20, pero `jsdom 30` depende de `undici` y este de
   `worker_threads.markAsUncloneable`, disponible solo desde Node 22.10. En
@@ -32,6 +45,17 @@ versionado sigue [Versionado Semántico](https://semver.org/lang/es/).
 
 ### Agregado
 
+- **Navegación por módulos.** Las pestañas se reemplazan por un riel lateral
+  con ícono y descripción por módulo, colapsable a solo íconos y convertido
+  en cajón deslizable en pantallas estrechas. El módulo activo se marca con
+  barra de acento, superficie teñida y peso tipográfico, de modo que no
+  depende solo del color (WCAG 1.4.1).
+- **Encabezado de módulo** con ícono, título y una línea que dice qué hace.
+- **Barra de contexto plegable**: el resumen de parámetros queda visible y el
+  formulario que los edita se despliega a petición, en vez de ocupar la
+  primera pantalla de cada módulo.
+- **Escala de elevación** de tres capas de opacidad baja, encabezado de tabla
+  adherente y realce de fila al pasar el cursor.
 - Cobertura de pruebas de `src/lib`: validación por esquema y versión del
   almacenamiento, y escape CSV conforme al RFC 4180 en la exportación.
 
