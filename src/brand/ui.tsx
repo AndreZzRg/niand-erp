@@ -10,11 +10,96 @@ import type {
   SelectHTMLAttributes,
   TextareaHTMLAttributes,
 } from 'react';
-import { useId } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 /* ── Utilidad de clases ───────────────────────────────────────────── */
 export function cx(...partes: Array<string | false | null | undefined>): string {
   return partes.filter(Boolean).join(' ');
+}
+
+/* ── Pista ────────────────────────────────────────────────────────────
+   Ayuda contextual sobre cualquier elemento.
+
+   Se dibuja en un portal sobre `document.body` y no dentro del elemento
+   que la dispara. Si se renderizara en su sitio, la recortaría el primer
+   antepasado con `overflow: hidden` —toda tarjeta con título lo tiene— y
+   aparecería cortada justo en los casos en que más falta hace.
+
+   Responde a `focus` además de a `hover`, de modo que quien navega con
+   teclado recibe la misma ayuda, y se anuncia con `aria-describedby` para
+   que un lector de pantalla la lea como descripción del control. Se oculta
+   al desplazar porque su posición se fija al aparecer.                   */
+
+export function Pista({
+  texto,
+  children,
+  lado = 'arriba',
+  className,
+}: {
+  texto: ReactNode;
+  children: ReactNode;
+  lado?: 'arriba' | 'abajo';
+  className?: string;
+}) {
+  const [caja, setCaja] = useState<DOMRect | null>(null);
+  const anclaRef = useRef<HTMLSpanElement>(null);
+  const id = useId();
+
+  function mostrar() {
+    const r = anclaRef.current?.getBoundingClientRect();
+    if (r) setCaja(r);
+  }
+  const ocultar = () => setCaja(null);
+
+  useEffect(() => {
+    if (!caja) return;
+    // La posición se calcula una vez: si la página se mueve, la pista
+    // quedaría flotando lejos de su ancla.
+    const cerrar = () => setCaja(null);
+    window.addEventListener('scroll', cerrar, true);
+    window.addEventListener('resize', cerrar);
+    return () => {
+      window.removeEventListener('scroll', cerrar, true);
+      window.removeEventListener('resize', cerrar);
+    };
+  }, [caja]);
+
+  if (!texto) return <>{children}</>;
+
+  return (
+    <>
+      <span
+        ref={anclaRef}
+        className={cx('inline-flex max-w-full', className)}
+        onMouseEnter={mostrar}
+        onMouseLeave={ocultar}
+        onFocusCapture={mostrar}
+        onBlurCapture={ocultar}
+        aria-describedby={caja ? id : undefined}
+      >
+        {children}
+      </span>
+
+      {caja &&
+        typeof document !== 'undefined' &&
+        createPortal(
+          <span
+            id={id}
+            role="tooltip"
+            className="pista"
+            style={{
+              left: Math.round(caja.left + caja.width / 2),
+              top: Math.round(lado === 'arriba' ? caja.top - 8 : caja.bottom + 8),
+              transform: `translate(-50%, ${lado === 'arriba' ? '-100%' : '0'})`,
+            }}
+          >
+            {texto}
+          </span>,
+          document.body,
+        )}
+    </>
+  );
 }
 
 /* ── Botón ────────────────────────────────────────────────────────── */
@@ -39,6 +124,15 @@ const BOTON_TAMANO: Record<TamanoBoton, string> = {
   lg: 'h-12 px-6 text-base',
 };
 
+/**
+ * Botón del sistema.
+ *
+ * Si trae `aria-label` es porque su contenido no se lee —un botón de solo
+ * ícono—, así que además se le pone una pista con ese mismo texto: quien
+ * usa lector de pantalla ya tenía la etiqueta, y quien ve la pantalla
+ * necesita igual saber qué hace el ícono antes de pulsarlo. La regla es
+ * automática para que no dependa de acordarse en cada sitio de uso.
+ */
 export function Boton({
   variante = 'primario',
   tamano = 'md',
@@ -48,13 +142,16 @@ export function Boton({
   variante?: VarianteBoton;
   tamano?: TamanoBoton;
 }) {
-  return (
+  const boton = (
     <button
       type="button"
       className={cx(BOTON_BASE, BOTON_VARIANTE[variante], BOTON_TAMANO[tamano], className)}
       {...resto}
     />
   );
+
+  const etiqueta = resto['aria-label'];
+  return etiqueta ? <Pista texto={etiqueta}>{boton}</Pista> : boton;
 }
 
 /* ── Tarjeta ──────────────────────────────────────────────────────── */

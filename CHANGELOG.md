@@ -45,6 +45,20 @@ versionado sigue [Versionado Semántico](https://semver.org/lang/es/).
 
 ### Agregado
 
+- **Portada de módulos.** La aplicación abre mostrando de qué se compone y,
+  cuando el módulo aporta una cifra, en qué estado está, en vez de caer
+  dentro del primer módulo sin contexto. Alterna entre rejilla —para
+  reconocer— y lista —para densidad—, y recuerda la preferencia.
+- **Ayuda contextual en toda la interfaz.** Un primitivo `Pista` que se
+  dibuja en un portal sobre el cuerpo, de modo que no lo recorta ningún
+  antepasado con `overflow: hidden`. Responde a foco además de a cursor y se
+  anuncia con `aria-describedby`. Todo botón con `aria-label` —los de solo
+  ícono— la recibe automáticamente, sin depender de recordarlo en cada sitio.
+- **Sello gráfico derivado del símbolo de marca.** El logotipo son dos astas
+  verticales unidas por una diagonal ascendente rematada en un punto nodo;
+  esas tres figuras pasan a ser el vocabulario de la interfaz: barra de
+  acento del módulo activo, acento diagonal de esquina, punto nodo como
+  marca de sección y retícula de plano en la portada.
 - **Navegación por módulos.** Las pestañas se reemplazan por un riel lateral
   con ícono y descripción por módulo, colapsable a solo íconos y convertido
   en cajón deslizable en pantallas estrechas. El módulo activo se marca con

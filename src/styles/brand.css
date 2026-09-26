@@ -97,6 +97,12 @@
     0 1px 2px rgb(20 18 43 / 0.06), 0 8px 20px -6px rgb(20 18 43 / 0.12),
     0 28px 56px -24px rgb(20 18 43 / 0.18);
   --sombra-ni: var(--sombra-2);
+
+  /* La pista invierte el contraste: oscura sobre claro. */
+  --tinta-pista: #14122b;
+  --pista-texto: #f4f3fc;
+  /* Trama de la retícula de la portada. */
+  --reticula: rgb(20 18 43 / 0.045);
 }
 
 [data-theme='dark'] {
@@ -126,6 +132,11 @@
     0 1px 2px rgb(0 0 0 / 0.5), 0 8px 20px -6px rgb(0 0 0 / 0.55),
     0 28px 56px -24px rgb(0 0 0 / 0.7);
   --sombra-ni: var(--sombra-2);
+
+  /* En oscuro la pista se aclara, para conservar el contraste invertido. */
+  --tinta-pista: #2d2856;
+  --pista-texto: #f4f3fc;
+  --reticula: rgb(255 255 255 / 0.04);
 }
 
 @theme inline {
@@ -284,6 +295,83 @@
     translate: 0 -50%;
     border-radius: 0 3px 3px 0;
     background-color: var(--marca);
+  }
+
+  /* ── Pista ─────────────────────────────────────────────────────────
+     Vive en un portal sobre el cuerpo, de modo que se posiciona en
+     coordenadas de ventana y debe quedar por encima de todo. */
+  .pista {
+    position: fixed;
+    z-index: 200;
+    max-width: 20rem;
+    border-radius: 0.5rem;
+    background-color: var(--tinta-pista);
+    padding: 0.375rem 0.625rem;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    line-height: 1.45;
+    font-weight: 450;
+    color: var(--pista-texto);
+    box-shadow: var(--sombra-3);
+    pointer-events: none;
+    text-wrap: pretty;
+    animation: pista-entra 0.12s var(--ease-ni);
+  }
+
+  @keyframes pista-entra {
+    from {
+      opacity: 0;
+    }
+  }
+
+  /* ── Sello NiAnd ───────────────────────────────────────────────────
+     El símbolo del manual son dos astas verticales unidas por una
+     diagonal ascendente, rematada por un punto nodo en señal. Esas tres
+     figuras —asta, diagonal y nodo— son el vocabulario de la interfaz.
+     No se inventa un estilo nuevo: se reusa la geometría de la marca. */
+
+  /* Punto nodo: marca de sección, heredada del remate del símbolo. */
+  .nodo::before {
+    content: '';
+    display: inline-block;
+    width: 0.4375rem;
+    height: 0.4375rem;
+    margin-right: 0.5rem;
+    border-radius: 9999px;
+    background-color: var(--color-senal);
+    vertical-align: 0.1em;
+  }
+
+  /* Diagonal ascendente: acento de esquina de las piezas destacadas.
+     Replica el ángulo del asta del símbolo. */
+  .diagonal {
+    position: relative;
+    overflow: hidden;
+  }
+  .diagonal::after {
+    content: '';
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    width: 3.25rem;
+    height: 3.25rem;
+    background: linear-gradient(
+      225deg,
+      var(--marca-tenue) 0%,
+      var(--marca-tenue) 48%,
+      transparent 48.5%
+    );
+    pointer-events: none;
+  }
+
+  /* Retícula de plano: el fondo de la portada. Dos tramas de líneas
+     finísimas que evocan papel de ingeniería sin restar contraste. */
+  .reticula {
+    background-image:
+      linear-gradient(var(--reticula) 1px, transparent 1px),
+      linear-gradient(90deg, var(--reticula) 1px, transparent 1px);
+    background-size: 2.25rem 2.25rem;
+    background-position: center;
   }
 
   /* ── Tablas de datos ───────────────────────────────────────────────

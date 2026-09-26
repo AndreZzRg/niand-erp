@@ -6,6 +6,9 @@
  * documento. El riel además admite el nombre completo del módulo sin
  * recortarlo y deja sitio para crecer.
  *
+ * La aplicación abre en la portada, no dentro de un módulo: quien llega ve
+ * primero de qué se compone la herramienta y dónde hay trabajo pendiente.
+ *
  * En pantallas estrechas el riel se convierte en un cajón que se abre
  * sobre el contenido; por debajo de `lg` nunca ocupa ancho fijo.
  *
@@ -17,6 +20,7 @@ import {
   Building2,
   ChartColumn,
   FileText,
+  LayoutDashboard,
   Menu,
   Moon,
   Package,
@@ -29,7 +33,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { Logo } from './Logo';
-import { cx } from './ui';
+import { Pista, cx } from './ui';
 
 export const MODULOS = [
   {
@@ -77,9 +81,14 @@ export const MODULOS = [
 
 export type ModuloId = (typeof MODULOS)[number]['id'];
 
-/** Identidad de la aplicación, para el encabezado del riel. */
-const APP = {
+/** Lo que el armazón puede estar mostrando: la portada o un módulo. */
+export type Vista = 'portada' | ModuloId;
+
+/** Identidad de la aplicación, para el riel y la portada. */
+export const APP = {
   nombre: 'ERP Módulos Básicos',
+  resumen:
+    'Terceros, inventario, facturación, tesorería y contabilidad de partida doble, sobre el Plan Único de Cuentas del Decreto 2650 de 1993.',
   icono: Building2,
   repositorio: 'https://github.com/AndreZzRg/niand-erp',
   version: 'v1.0.0',
@@ -132,19 +141,24 @@ function useRielColapsado() {
 /* ── Riel de módulos ──────────────────────────────────────────────── */
 
 function Riel({
-  moduloActivo,
-  onModulo,
+  vista,
+  onVista,
   colapsado,
   onColapsar,
   onNavegar,
 }: {
-  moduloActivo: ModuloId;
-  onModulo: (id: ModuloId) => void;
+  vista: Vista;
+  onVista: (v: Vista) => void;
   colapsado: boolean;
   onColapsar: () => void;
   onNavegar?: () => void;
 }) {
   const { tema, alternar } = useTema();
+
+  const ir = (v: Vista) => {
+    onVista(v);
+    onNavegar?.();
+  };
 
   return (
     <div className="flex h-full flex-col bg-riel">
@@ -155,13 +169,15 @@ function Riel({
           colapsado && 'lg:justify-center lg:px-2',
         )}
       >
-        <a
-          href={APP.repositorio}
-          aria-label={`Repositorio de ${APP.nombre}`}
-          className="shrink-0 rounded-lg"
-        >
-          <Logo alto={26} wordmark={!colapsado} />
-        </a>
+        <Pista texto="Abrir el repositorio en GitHub" lado="abajo">
+          <a
+            href={APP.repositorio}
+            aria-label={`Repositorio de ${APP.nombre}`}
+            className="shrink-0 rounded-lg"
+          >
+            <Logo alto={26} wordmark={!colapsado} />
+          </a>
+        </Pista>
       </div>
 
       {/* Nombre de la aplicación */}
@@ -176,36 +192,52 @@ function Riel({
         </span>
         {!colapsado && (
           <span className="min-w-0">
-            <span className="block truncate font-display text-sm font-semibold" title={APP.nombre}>
-              {APP.nombre}
-            </span>
+            <Pista texto={APP.resumen}>
+              <span className="block truncate font-display text-sm font-semibold">
+                {APP.nombre}
+              </span>
+            </Pista>
             <span className="eyebrow block truncate">Laboratorio</span>
           </span>
         )}
       </div>
 
-      {/* Módulos */}
+      {/* Navegación */}
       <nav aria-label="Módulos" className="min-h-0 flex-1 overflow-y-auto px-4 pb-4">
-        {!colapsado && <p className="eyebrow mb-2 px-1">Módulos</p>}
+        <ul className="mb-3 space-y-0.5">
+          <li>
+            <Pista texto="Portada: todos los módulos y su estado" lado="abajo">
+              <button
+                type="button"
+                onClick={() => ir('portada')}
+                aria-current={vista === 'portada' ? 'page' : undefined}
+                className={cx('modulo w-full text-left', colapsado && 'lg:justify-center')}
+              >
+                <LayoutDashboard size={17} className="shrink-0" />
+                {!colapsado && <span className="truncate">Portada</span>}
+              </button>
+            </Pista>
+          </li>
+        </ul>
+
+        {!colapsado && <p className="eyebrow nodo mb-2 px-1">Módulos</p>}
         <ul className="space-y-0.5">
           {MODULOS.map((m) => {
-            const activo = m.id === moduloActivo;
+            const activo = m.id === vista;
             const Icono = m.icono;
             return (
               <li key={m.id}>
-                <button
-                  type="button"
-                  onClick={() => {
-                    onModulo(m.id);
-                    onNavegar?.();
-                  }}
-                  aria-current={activo ? 'page' : undefined}
-                  title={m.rotulo}
-                  className={cx('modulo w-full text-left', colapsado && 'lg:justify-center')}
-                >
-                  <Icono size={17} className="shrink-0" />
-                  {!colapsado && <span className="truncate">{m.rotulo}</span>}
-                </button>
+                <Pista texto={`${m.rotulo} · ${m.descripcion}`} lado="abajo">
+                  <button
+                    type="button"
+                    onClick={() => ir(m.id)}
+                    aria-current={activo ? 'page' : undefined}
+                    className={cx('modulo w-full text-left', colapsado && 'lg:justify-center')}
+                  >
+                    <Icono size={17} className="shrink-0" />
+                    {!colapsado && <span className="truncate">{m.rotulo}</span>}
+                  </button>
+                </Pista>
               </li>
             );
           })}
@@ -219,28 +251,34 @@ function Riel({
           colapsado && 'lg:flex-col lg:px-2',
         )}
       >
-        <button
-          type="button"
-          onClick={alternar}
-          aria-label={tema === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
-          className="grid size-9 shrink-0 place-items-center rounded-lg border border-borde text-texto-2 transition-colors hover:bg-superficie-2 hover:text-texto"
-        >
-          {tema === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
-        </button>
+        <Pista texto={tema === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}>
+          <button
+            type="button"
+            onClick={alternar}
+            aria-label={tema === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+            className="grid size-9 shrink-0 place-items-center rounded-lg border border-borde text-texto-2 transition-colors hover:bg-superficie-2 hover:text-texto"
+          >
+            {tema === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
+        </Pista>
 
-        <button
-          type="button"
-          onClick={onColapsar}
-          aria-label={colapsado ? 'Expandir el menú de módulos' : 'Colapsar el menú de módulos'}
-          className="hidden size-9 shrink-0 place-items-center rounded-lg border border-borde text-texto-2 transition-colors hover:bg-superficie-2 hover:text-texto lg:grid"
-        >
-          {colapsado ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
-        </button>
+        <Pista texto={colapsado ? 'Expandir el menú' : 'Colapsar el menú a solo íconos'}>
+          <button
+            type="button"
+            onClick={onColapsar}
+            aria-label={colapsado ? 'Expandir el menú de módulos' : 'Colapsar el menú de módulos'}
+            className="hidden size-9 shrink-0 place-items-center rounded-lg border border-borde text-texto-2 transition-colors hover:bg-superficie-2 hover:text-texto lg:grid"
+          >
+            {colapsado ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
+          </button>
+        </Pista>
 
         {!colapsado && (
-          <span className="ml-auto truncate font-mono text-[0.6875rem] text-texto-3">
-            {APP.version}
-          </span>
+          <Pista texto="Versión publicada de este laboratorio">
+            <span className="ml-auto truncate font-mono text-[0.6875rem] text-texto-3">
+              {APP.version}
+            </span>
+          </Pista>
         )}
       </div>
     </div>
@@ -250,19 +288,21 @@ function Riel({
 /* ── Armazón ──────────────────────────────────────────────────────── */
 
 export function Shell({
-  moduloActivo,
-  onModulo,
+  vista,
+  onVista,
   children,
 }: {
-  moduloActivo: ModuloId;
-  onModulo: (id: ModuloId) => void;
+  vista: Vista;
+  onVista: (v: Vista) => void;
   children: ReactNode;
 }) {
   const { colapsado, alternar: alternarRiel } = useRielColapsado();
   const [cajonAbierto, setCajonAbierto] = useState(false);
 
-  const actual = MODULOS.find((m) => m.id === moduloActivo) ?? MODULOS[0];
-  const IconoActual = actual.icono;
+  const modulo = MODULOS.find((m) => m.id === vista);
+  const IconoCabecera = modulo?.icono ?? APP.icono;
+  const tituloCabecera = modulo?.rotulo ?? APP.nombre;
+  const descripcionCabecera = modulo?.descripcion ?? APP.resumen;
 
   // El cajón se cierra con Escape: es lo que espera quien navega con teclado.
   useEffect(() => {
@@ -288,12 +328,7 @@ export function Shell({
         )}
         style={{ width: colapsado ? 'var(--ancho-riel-min)' : 'var(--ancho-riel)' }}
       >
-        <Riel
-          moduloActivo={moduloActivo}
-          onModulo={onModulo}
-          colapsado={colapsado}
-          onColapsar={alternarRiel}
-        />
+        <Riel vista={vista} onVista={onVista} colapsado={colapsado} onColapsar={alternarRiel} />
       </aside>
 
       {/* Cajón en pantallas estrechas */}
@@ -307,8 +342,8 @@ export function Shell({
           />
           <div className="absolute inset-y-0 left-0 w-[17rem] border-r border-riel-borde shadow-ni-3">
             <Riel
-              moduloActivo={moduloActivo}
-              onModulo={onModulo}
+              vista={vista}
+              onVista={onVista}
               colapsado={false}
               onColapsar={alternarRiel}
               onNavegar={() => setCajonAbierto(false)}
@@ -318,31 +353,38 @@ export function Shell({
       )}
 
       <div className="flex min-w-0 flex-1 flex-col">
-        {/* Encabezado del módulo */}
+        {/* Encabezado */}
         <header className="no-imprimir sticky top-0 z-30 border-b border-borde bg-lienzo/85 backdrop-blur-sm">
           <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-4 sm:px-6 lg:px-8">
-            <button
-              type="button"
-              onClick={() => setCajonAbierto(true)}
-              aria-label="Abrir el menú de módulos"
-              className="grid size-9 shrink-0 place-items-center rounded-lg border border-borde text-texto-2 transition-colors hover:bg-superficie-2 hover:text-texto lg:hidden"
-            >
-              <Menu size={17} />
-            </button>
+            <Pista texto="Abrir el menú de módulos" lado="abajo">
+              <button
+                type="button"
+                onClick={() => setCajonAbierto(true)}
+                aria-label="Abrir el menú de módulos"
+                className="grid size-9 shrink-0 place-items-center rounded-lg border border-borde text-texto-2 transition-colors hover:bg-superficie-2 hover:text-texto lg:hidden"
+              >
+                <Menu size={17} />
+              </button>
+            </Pista>
 
             <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-marca-tenue text-marca">
-              <IconoActual size={19} />
+              <IconoCabecera size={19} />
             </span>
 
             <div className="min-w-0 flex-1">
-              <h1 className="truncate font-display text-lg font-semibold">{actual.rotulo}</h1>
-              <p className="truncate text-sm text-texto-2">{actual.descripcion}</p>
+              <h1 className="truncate font-display text-lg font-semibold">{tituloCabecera}</h1>
+              <p className="truncate text-sm text-texto-2">{descripcionCabecera}</p>
             </div>
 
-            <span className="hidden shrink-0 items-center gap-2 rounded-full border border-ambar-suave/40 bg-ambar-suave/10 px-3 py-1 font-mono text-[0.6875rem] tracking-wide text-ambar uppercase sm:inline-flex dark:text-ambar-suave">
-              <TriangleAlert size={12} />
-              Laboratorio
-            </span>
+            <Pista
+              texto="Proyecto de laboratorio: los resultados son orientativos y no constituyen concepto jurídico profesional."
+              lado="abajo"
+            >
+              <span className="hidden shrink-0 items-center gap-2 rounded-full border border-ambar-suave/40 bg-ambar-suave/10 px-3 py-1 font-mono text-[0.6875rem] tracking-wide text-ambar uppercase sm:inline-flex dark:text-ambar-suave">
+                <TriangleAlert size={12} />
+                Laboratorio
+              </span>
+            </Pista>
           </div>
         </header>
 
